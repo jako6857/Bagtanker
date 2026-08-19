@@ -1,14 +1,20 @@
-import { useEffect } from "react";
-import { apiFetch } from "./lib/apiClient";
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./lib/pages/HomePage";
+import ProductsPage from "./lib/pages/ProductsPage";
+import NewsPage from "./lib/pages/NewsPage";
+import ContactPage from "./lib/pages/ContactPage";
+import LoginPage from "./lib/pages/LoginPage";
 
 function App() {
-  useEffect(() => {
-    apiFetch("/products")
-      .then((data) => console.log("Products:", data))
-      .catch((err) => console.error("API error:", err));
-  }, []);
-
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/products" element={<ProductsPage />} />
+      <Route path="/news" element={<NewsPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/login" element={<LoginPage />} />
+    </Routes>
+  );
 }
 
 export default App;

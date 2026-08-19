@@ -1,5 +1,14 @@
 const BASE_URL = import.meta.env.VITE_API_URL as string;
 
+const API_ORIGIN = BASE_URL.replace(/\/api\/?$/, "");
+
+export function getAssetUrl(path: string): string {
+  if (/^https?:\/\//.test(path)) {
+    return path;
+  }
+  return `${API_ORIGIN}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
 export class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -19,7 +28,7 @@ export async function apiFetch<T>(
   const { auth, headers, ...rest } = options;
 
   const finalHeaders: Record<string, string> = {
-    "Content-Type": "application/json",
+    "content-Type": "application/json",
     ...(headers as Record<string, string>),
   };
 
@@ -38,7 +47,9 @@ export async function apiFetch<T>(
   let body: any = null;
   try {
     body = await res.json();
-  } catch {}
+  } catch {
+    // response had no JSON body
+  }
 
   if (!res.ok) {
     throw new ApiError(
