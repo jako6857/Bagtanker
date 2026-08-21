@@ -1,22 +1,33 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { getStoredTokens } from "../auth";
 
-const NAV_LINKS = [
+const BASE_LINKS = [
   { label: "Forside", to: "/" },
   { label: "Produkter", to: "/products" },
   { label: "Nyheder", to: "/news" },
   { label: "Kontakt", to: "/contact" },
-  { label: "Login", to: "/login" },
 ];
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const isLoggedIn = !!getStoredTokens().accessToken;
+  const authLink = isLoggedIn
+    ? { label: "Min side", to: "/min-side" }
+    : { label: "Login", to: "/login" };
+
+  const navLinks = [...BASE_LINKS, authLink];
+
   return (
     <>
       <header className="absolute top-0 left-0 right-0 z-40 flex items-center justify-between px-8 py-6">
-        <Link to="/" className="text-3xl font-bold text-white">
-          Bagtanker
+        <Link to="/">
+          <img
+            src="/Logo-1.png"
+            alt="Bagtanker"
+            className="h-10 md:h-12 w-auto"
+          />
         </Link>
 
         <button
@@ -66,7 +77,7 @@ function Navbar() {
             </button>
 
             <ul className="flex flex-col gap-6">
-              {NAV_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}

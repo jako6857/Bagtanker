@@ -1,118 +1,108 @@
-import { Request, Response } from 'express';
-import { prisma } from '../prisma.js';
+import { Request, Response } from "express";
+import { prisma } from "../prisma.js";
 
 class ProductController {
-
   getRecords = async (req: Request, res: Response) => {
-
     try {
-
       const data = await prisma.product.findMany({
         select: {
           id: true,
           title: true,
           slug: true,
           imageUrl: true,
-          price: true
-        }
+          price: true,
+        },
       });
 
       res.json(data);
-
     } catch (error) {
-
       console.error(error);
 
       res.status(500).json({
-        error: 'Failed to fetch products'
+        error: "Failed to fetch products",
       });
-
     }
   };
 
   getRecordsByCategory = async (req: Request, res: Response) => {
-
     const { slug } = req.params;
 
     try {
-
       const data = await prisma.product.findMany({
         where: {
-          productCategories: {
+          categoryProducts: {
             some: {
               categories: {
-                slug
-              }
-            }
-          }
+                slug: String(slug),
+              },
+            },
+          },
         },
         select: {
           id: true,
           title: true,
           slug: true,
           imageUrl: true,
-          price: true
-        }
+          price: true,
+        },
       });
 
       res.json(data);
-
     } catch (error) {
-
       console.error(error);
 
       res.status(500).json({
-        error: 'Failed to fetch products'
+        error: "Failed to fetch products",
       });
-
     }
   };
 
   getRecord = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
 
-    const { slug } = req.params;
+    if (Number.isNaN(id)) {
+      return res.status(400).json({
+        error: "Invalid product id",
+      });
+    }
 
     try {
-
-      const data = await prisma.product.findFirst({
+      const data = await prisma.product.findUnique({
         where: {
-          slug
+          id,
         },
         include: {
           productIngredients: {
             include: {
               ingredients: {
                 select: {
-                  title: true
-                }
+                  title: true,
+                },
               },
               units: {
                 select: {
                   name: true,
-                  abbreviation: true
-                }
-              }
-            }
-          }
-        }
+                  abbreviation: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       if (!data) {
         return res.status(404).json({
-          error: 'Product not found'
+          error: "Product not found",
         });
       }
 
       res.json(data);
-
     } catch (error) {
-
       console.error(error);
 
       res.status(500).json({
-        error: 'Failed to fetch product'
+        error: "Failed to fetch product",
       });
-
     }
   };
 }

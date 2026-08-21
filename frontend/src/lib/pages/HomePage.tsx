@@ -22,7 +22,7 @@ function HomePage() {
   );
 
   return (
-    <PageHero backgroundImage="/assets/hero-bg.jpg">
+    <PageHero backgroundImage="/bread-slidebg-02.jpg">
       <div className="flex items-center min-h-screen px-8">
         <div className="max-w-md w-full">
           <h1 className="text-3xl font-bold text-amber-400 mb-4">Nyheder</h1>

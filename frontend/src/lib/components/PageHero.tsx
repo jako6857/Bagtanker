@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import Navbar from "./Navbar";
+import CategoryNav from "./CategoryNav";
 
 interface PageHeroProps {
   backgroundImage: string;
   children: ReactNode;
-  minHeight?: string; // tailwind height class, e.g. "min-h-screen" or "h-64"
+  minHeight?: string;
 }
 
 function PageHero({
@@ -13,12 +14,18 @@ function PageHero({
   minHeight = "min-h-screen",
 }: PageHeroProps) {
   return (
-    <div
-      className={`relative ${minHeight} bg-cover bg-center`}
-      style={{ backgroundImage: `url('${backgroundImage}')` }}
-    >
-      <Navbar />
-      {children}
+    <div>
+      <div
+        className={`relative ${minHeight} bg-cover bg-center`}
+        style={{ backgroundImage: `url('${backgroundImage}')` }}
+      >
+        <div className="absolute inset-0 bg-slate-900/45" />
+        <div className="relative z-10">
+          <Navbar />
+          {children}
+        </div>
+      </div>
+      <CategoryNav />
     </div>
   );
 }
